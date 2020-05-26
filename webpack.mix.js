@@ -1,4 +1,6 @@
-const mix = require('laravel-mix');
+const path = require('path')
+const fs = require('fs-extra')
+const mix = require('laravel-mix')
 
 /*
  |--------------------------------------------------------------------------
@@ -12,4 +14,30 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+
+mix.webpackConfig({
+    resolve: {
+        extensions: ['.js', '.vue', '.json'],
+        alias: {
+            '~': path.join(__dirname, './resources/js')
+        }
+    },
+    output: {
+        chunkFilename: 'js/[chunkhash].js',
+        path: mix.config.hmr ? '/' : path.resolve(__dirname, './public/build')
+    }
+})
+
+mix.then(() => {
+    if (!mix.config.hmr) {
+        process.nextTick(() => publishAseets())
+    }
+})
+
+function publishAseets() {
+    const publicDir = path.resolve(__dirname, './public')
+
+    fs.copySync(path.join(publicDir, 'build'), path.join(publicDir))
+    fs.removeSync(path.join(publicDir, 'build'))
+}
