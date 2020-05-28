@@ -1,9 +1,7 @@
-import Cookies from 'js-cookie'
-
 // state
 export const state = {
     user: null,
-    token: null
+    token: localStorage.getItem('auth')
 }
 
 // getters
@@ -16,11 +14,6 @@ export const getters = {
 // mutations
 export const mutations = {
 
-    SAVE_TOKEN(state, { token, remember }) {
-        state.token = token
-        Cookies.set('token', token, { expires: remember ? 10 : null })
-    },
-
     FETCH_USER_SUCCESS(state, { user }) {
         state.user = user
     },
@@ -31,27 +24,24 @@ export const mutations = {
 
     FETCH_USER_FAILURE(state) {
         state.token = null
-        Cookies.remove('token')
+        localStorage.removeItem('auth')
     },
 
     LOGOUT(state) {
         state.user = null
         state.token = null
 
-        Cookies.remove('token')
+        localStorage.removeItem('auth')
     }
 
 }
 
 // actions
 export const actions = {
-    saveToken({ commit, dispatch }, payload) {
-        commit('SAVE_TOKEN', payload)
-    },
 
     async fetchUser({ commit }) {
         try {
-            const { data } = await axios.get('/user')
+            const { data } = await axios.get('api/user')
 
             commit('FETCH_USER_SUCCESS', { user: data })
         } catch (e) {
@@ -65,7 +55,7 @@ export const actions = {
 
     async logout({ commit }) {
         try {
-            await axios.post('/logout')
+            await axios.post('api/logout')
         } catch (e) { }
 
         commit(types.LOGOUT)

@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
  * API Routes SPA
  */
 
-Route::group(['middleware' => 'auth:api', 'namespace' => 'Auth'], function() {
+Route::group(['middleware' => 'auth:sanctum', 'namespace' => 'Auth'], function() {
     Route::get('user', function() {
-        return \App\User::all();
+        return response()->json(Auth::user());
     });
 });
 

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -26,15 +29,32 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    // public function __construct()
+    // {
+    //     $this->middleware('guest')->except('logout');
+    // }
+
+    public function login(Request $request)
     {
-        $this->middleware('guest')->except('logout');
+        $request->validate([
+            'email' => ['required'],
+            'password' => ['required']
+        ]);
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(Auth::user(), 200);
+        }
+
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.']
+        ]);
     }
+
 }
