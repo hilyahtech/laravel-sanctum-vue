@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { sync } from 'vuex-router-sync'
 import routes from './routes'
+import store from '~/store'
 
 Vue.use(Router)
 
 // The middleware for every page of the application.
-const globalMiddleware = []
+const globalMiddleware = ['check-auth']
 
 // Load middleware modules dynamically.
 const routeMiddleware = resolveMiddleware(
@@ -13,6 +15,8 @@ const routeMiddleware = resolveMiddleware(
 )
 
 const router = createRouter()
+
+sync(store, router)
 
 export default router
 
