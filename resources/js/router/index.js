@@ -4,6 +4,14 @@ import routes from './routes'
 
 Vue.use(Router)
 
+// The middleware for every page of the application.
+const globalMiddleware = []
+
+// Load middleware modules dynamically.
+const routeMiddleware = resolveMiddleware(
+    require.context('~/middleware', false, /.*\.js$/)
+)
+
 const router = createRouter()
 
 export default router
@@ -16,6 +24,8 @@ function createRouter() {
         linkExactActiveClass: 'is-active',
         routes
     })
+
+    router.beforeEach(beforeEach)
 
     return router
 }
@@ -36,4 +46,98 @@ function scrollBehavior(to, from, savedPosition) {
     }
 
     return { x: 0, y: 0 }
+}
+
+async function beforeEach(to, from, next) {
+    let components = []
+
+    try {
+        // Get the matched components and resolve them.
+        components = await resolveComponents(
+            router.getMatchedComponents({ ...to })
+        )
+    } catch (error) {
+        if (/^Loading( CSS)? chunk (\d)+ failed\./.test(error.message)) {
+            window.location.reload(true)
+            return
+        }
+    }
+
+    if (components.length === 0) {
+        return next()
+    }
+
+    // Get the middleware for all the matched components.
+    const middleware = getMiddleware(components)
+
+    // Call each middleware.
+    callMiddleware(middleware, to, from, (...args) => {
+        // Set the application layout only if "next()" was called with no args.
+        if (args.length === 0) {
+            router.app.setLayout(components[0].layout || '')
+        }
+
+        next(...args)
+    })
+}
+
+function callMiddleware(middlewares, to, from, next) {
+    const stack = middlewares.reverse()
+
+    const _next = (...args) => {
+        // Stop if "_next" was called with an argument or the stack is empty.
+        if (args.length > 0 || stack.length === 0) {
+            if (args.length > 0) {
+                router.app.$loading.finish()
+            }
+
+            return next(...args)
+        }
+
+        // Allow middleware to have parameters.  Separate params from middleware
+        // name with a :, and multiple params from each other with a |.
+        const middleware = stack.pop().split(':')
+        const middleware_name = middleware.shift()
+        const middleware_params = middleware.length ? middleware.shift().split('|') : null
+
+        if (typeof middleware_name === 'function') {
+            middleware_name(to, from, _next, middleware_params)
+        } else if (routeMiddleware[middleware_name]) {
+            routeMiddleware[middleware_name](to, from, _next, middleware_params)
+        } else {
+            throw Error(`Undefined middleware [${middleware}]`)
+        }
+    }
+
+    _next()
+}
+
+function resolveComponents(components) {
+    return Promise.all(components.map(component => {
+        return typeof component === 'function' ? component() : component
+    }))
+}
+
+function getMiddleware(components) {
+    const middleware = [...globalMiddleware]
+
+    components.filter(c => c.middleware).forEach(component => {
+        if (Array.isArray(component.middleware)) {
+            middleware.push(...component.middleware)
+        } else {
+            middleware.push(component.middleware)
+        }
+    })
+
+    return middleware
+}
+
+function resolveMiddleware(requireContext) {
+    return requireContext.keys()
+        .map(file =>
+            [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)]
+        )
+        .reduce((guards, [name, guard]) => (
+            { ...guards, [name]: guard.default }
+        ), {})
 }
