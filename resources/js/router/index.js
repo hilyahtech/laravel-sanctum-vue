@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { sync } from 'vuex-router-sync'
-import routes from './routes'
 import store from '~/store'
+import routes from './routes'
 
 Vue.use(Router)
 
@@ -20,6 +20,11 @@ sync(store, router)
 
 export default router
 
+/**
+ * Create a new router instance.
+ *
+ * @return {Router}
+ */
 function createRouter() {
     const router = new Router({
         scrollBehavior,
@@ -30,28 +35,18 @@ function createRouter() {
     })
 
     router.beforeEach(beforeEach)
+    router.afterEach(afterEach)
 
     return router
 }
 
-function scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-        return savedPosition
-    }
-
-    if (to.hash) {
-        return { selector: to.hash }
-    }
-
-    const [component] = router.getMatchedComponents({ ...to }).slice(-1)
-
-    if (component && component.scrollToTop === false) {
-        return {}
-    }
-
-    return { x: 0, y: 0 }
-}
-
+/**
+ * Global router guard.
+ *
+ * @param {Route} to
+ * @param {Route} from
+ * @param {Function} next
+ */
 async function beforeEach(to, from, next) {
     let components = []
 
@@ -71,6 +66,11 @@ async function beforeEach(to, from, next) {
         return next()
     }
 
+    // Start the loading bar.
+    if (components[components.length - 1].loading !== false) {
+        router.app.$nextTick(() => router.app.$loading.start())
+    }
+
     // Get the middleware for all the matched components.
     const middleware = getMiddleware(components)
 
@@ -85,6 +85,27 @@ async function beforeEach(to, from, next) {
     })
 }
 
+/**
+ * Global after hook.
+ *
+ * @param {Route} to
+ * @param {Route} from
+ * @param {Function} next
+ */
+async function afterEach(to, from, next) {
+    await router.app.$nextTick()
+
+    router.app.$loading.finish()
+}
+
+/**
+ * Call each middleware.
+ *
+ * @param {Array} middleware
+ * @param {Route} to
+ * @param {Route} from
+ * @param {Function} next
+ */
 function callMiddleware(middlewares, to, from, next) {
     const stack = middlewares.reverse()
 
@@ -116,12 +137,24 @@ function callMiddleware(middlewares, to, from, next) {
     _next()
 }
 
+/**
+ * Resolve async components.
+ *
+ * @param  {Array} components
+ * @return {Array}
+ */
 function resolveComponents(components) {
     return Promise.all(components.map(component => {
         return typeof component === 'function' ? component() : component
     }))
 }
 
+/**
+ * Merge the the global middleware with the components middleware.
+ *
+ * @param  {Array} components
+ * @return {Array}
+ */
 function getMiddleware(components) {
     const middleware = [...globalMiddleware]
 
@@ -136,6 +169,38 @@ function getMiddleware(components) {
     return middleware
 }
 
+/**
+ * Scroll Behavior
+ *
+ * @link https://router.vuejs.org/en/advanced/scroll-behavior.html
+ *
+ * @param  {Route} to
+ * @param  {Route} from
+ * @param  {Object|undefined} savedPosition
+ * @return {Object}
+ */
+function scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+        return savedPosition
+    }
+
+    if (to.hash) {
+        return { selector: to.hash }
+    }
+
+    const [component] = router.getMatchedComponents({ ...to }).slice(-1)
+
+    if (component && component.scrollToTop === false) {
+        return {}
+    }
+
+    return { x: 0, y: 0 }
+}
+
+/**
+ * @param  {Object} requireContext
+ * @return {Object}
+ */
 function resolveMiddleware(requireContext) {
     return requireContext.keys()
         .map(file =>

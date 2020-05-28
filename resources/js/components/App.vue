@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <loading ref="loading"/>
         <navbar/>
         <transition name="page" mode="out-in">
             <component :is="layout" v-if="layout" />
@@ -8,6 +9,7 @@
 </template>
 
 <script>
+import Loading from './Loading'
 import Navbar from '~/components/Navbar'
 
 // Load layout components dynamically.
@@ -26,6 +28,7 @@ export default {
     el: '#app',
 
     components: {
+        Loading,
         Navbar
     },
 
@@ -33,6 +36,10 @@ export default {
         layout: null,
         defaultLayout: 'default',
     }),
+
+    mounted() {
+        this.$loading = this.$refs.loading
+    },
 
     methods: {
         /**
