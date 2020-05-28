@@ -27,6 +27,7 @@ import Form from 'vform'
 
 export default {
     layout: 'auth',
+    middleware: 'guest',
 
     data: () => ({
         form: new Form({

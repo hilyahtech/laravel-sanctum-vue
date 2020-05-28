@@ -34,6 +34,7 @@
 
 <script>
 export default {
-    layout: 'auth'
+    layout: 'auth',
+    middleware: 'guest'
 }
 </script>

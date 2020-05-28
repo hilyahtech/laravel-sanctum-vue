@@ -34,6 +34,7 @@ const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).j
 
 export default {
     layout: 'auth',
+    middleware: 'guest',
 
     data: () => ({
         error: '',
