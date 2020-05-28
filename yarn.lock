@@ -753,6 +753,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@fortawesome/fontawesome-free@^5.13.0":
+  version "5.13.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.13.0.tgz#fcb113d1aca4b471b709e8c9c168674fbd6e06d9"
+  integrity sha512-xKOeQEl5O47GPZYIMToj6uuA2syyFlq9EMSl2ui0uytjY9xbe8XS0pexNWmxrdcCyNGyDmLyYw5FtKsalBUeOg==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -6732,6 +6737,11 @@ vendors@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
   integrity sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w==
+
+vform@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vform/-/vform-1.0.1.tgz#aedce47696c589e0c1eab9bd76a00189d6164683"
+  integrity sha512-O+6zpxxhn3/iYWBaWWwx0sjeRP6Mh5MDNHCjPALtXFT/Mef6nPHquXEAUtai96FwogkGlTQCzFADqwbOsj8E7A==
 
 vm-browserify@^1.0.1:
   version "1.1.2"

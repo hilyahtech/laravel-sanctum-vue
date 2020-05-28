@@ -5,7 +5,9 @@ import Buefy from 'buefy'
 import router from './router'
 import App from './components/App'
 
-Vue.use(Buefy)
+Vue.use(Buefy, {
+    defaultIconPack: 'fas'
+})
 
 const $app = new Vue({
     ...App,
