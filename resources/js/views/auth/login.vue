@@ -21,6 +21,10 @@
                                 </b-field>
 
                                 <b-field>
+                                    <router-link :to="{ name: 'password.request'}">Lupa kata sandi?</router-link>
+                                </b-field>
+
+                                <b-field>
                                     <b-checkbox v-model="form.remember">Ingat saya</b-checkbox>
                                 </b-field>
 
