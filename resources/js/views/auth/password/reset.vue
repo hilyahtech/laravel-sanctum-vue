@@ -49,8 +49,12 @@ export default {
     }),
 
     methods: {
-        submit() {
+        async submit() {
+            const { data } = await this.form.post('/api/password/reset')
 
+			this.form.reset()
+			
+			this.$router.push({ name: 'login' })
         }
     }
 

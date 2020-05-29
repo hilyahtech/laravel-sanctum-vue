@@ -36,8 +36,10 @@ export default {
     }),
 
     methods: {
-        submit() {
+        async submit() {
+            const { data } = await this.form.post('/email/resend')
 
+			this.form.reset()
         }
     }
 
