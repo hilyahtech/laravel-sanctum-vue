@@ -9,3 +9,22 @@ Saya terinspirasi dari [Laravel Vue SPA](https://github.com/cretueusebiu/laravel
 * Vue + Vue-router + Vuex
 * Autentikasi dengan Sanctum
 * Bulma + Buefy + Font Awesome 5 or (Material Design Icons [docs Buefy](https://buefy.org/documentation/start))
+
+## Instalasi
+* `composer create-project hilyahtech/laravel-sanctum-vue`
+* `copy .env.example .env` untuk copy .env
+* `php artisan key:generate`
+* `php artisan migrate`
+* `yarn install` atau `npm install`
+
+## Pemakaian
+
+##### Developer
+```sh
+yarn watch atau npm run watch
+```
+
+##### Produksi
+```sh
+yarn prod atau npm run prod
+```
