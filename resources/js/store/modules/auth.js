@@ -43,14 +43,16 @@ export const actions = {
         try {
             const { data } = await axios.get('/api/user')
 
+            localStorage.setItem("auth", "true");
+
             commit('FETCH_USER_SUCCESS', { user: data })
         } catch (e) {
             commit('FETCH_USER_FAILURE')
         }
     },
 
-    updateUser({ commit }, payload) {
-        commit('UPDATE_USER', payload)
+    updateUser({ commit }, data) {
+        commit('UPDATE_USER', {user: data})
     },
 
     async logout({ commit }) {
