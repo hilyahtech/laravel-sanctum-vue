@@ -1,9 +1,11 @@
 import Vue from 'vue'
+import VueMeta from 'vue-meta'
 import Router from 'vue-router'
 import { sync } from 'vuex-router-sync'
 import store from '~/store'
 import routes from './routes'
 
+Vue.use(VueMeta)
 Vue.use(Router)
 
 // The middleware for every page of the application.
