@@ -52,9 +52,9 @@ import { mapGetters } from 'vuex'
 
 export default {
     
-    // computed: mapGetters({
-    //     auth_user: 'auth/user'
-    // }),
+    computed: mapGetters({
+        auth_user: 'auth/user'
+    }),
 
     methods: {
         async logout () {
