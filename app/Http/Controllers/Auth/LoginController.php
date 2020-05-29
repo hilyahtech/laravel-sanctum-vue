@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
@@ -41,20 +42,45 @@ class LoginController extends Controller
     //     $this->middleware('guest')->except('logout');
     // }
 
-    public function login(Request $request)
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function validateLogin(Request $request)
     {
         $request->validate([
-            'email' => ['required'],
-            'password' => ['required']
+            $this->username() => 'required|string|regex:/(.+)@(.+)\.(.+)/i',
+            'password' => 'required|string',
         ]);
+    }
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(Auth::user(), 200);
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        $user = User::where('email', $request->email);
+
+        if ($user->exists()) {
+            $user->first();
+
+            if (Auth::attempt($request->only('email', 'password'))) {
+                return response()->json(Auth::user(), 200);
+            } else {
+                throw ValidationException::withMessages([
+                    'password' => ['Kata sandi yang Anda masukan salah.'],
+                ]);
+            }
+            
+        } else {
+            throw ValidationException::withMessages([
+                'email' => ['Alamat email Anda belum terdaftar.'],
+            ]);
         }
-
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.']
-        ]);
+        
     }
 
     public function logout(Request $request)
