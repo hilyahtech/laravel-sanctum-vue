@@ -41,7 +41,7 @@ export const actions = {
 
     async fetchUser({ commit }) {
         try {
-            const { data } = await axios.get('api/user')
+            const { data } = await axios.get('/api/user')
 
             commit('FETCH_USER_SUCCESS', { user: data })
         } catch (e) {
@@ -55,7 +55,7 @@ export const actions = {
 
     async logout({ commit }) {
         try {
-            await axios.post('api/logout')
+            await axios.post('/api/logout')
         } catch (e) { }
 
         commit(types.LOGOUT)
