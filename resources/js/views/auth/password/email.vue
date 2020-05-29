@@ -8,7 +8,7 @@
                     <b-field label="Alamat Email"
                         :type="{ 'is-danger': form.errors.has('email') }"
                         :message="{ [ form.errors.get('email') ] : form.errors.has('email') }">
-                        <b-input type="email" placeholder="nama@contoh.com"></b-input>
+                        <b-input v-model="form.email" type="email" placeholder="nama@contoh.com"></b-input>
                     </b-field>
 
                     <b-field>
@@ -36,8 +36,10 @@ export default {
     }),
 
     methods: {
-        submit() {
+        async submit() {
+            const { data } = await this.form.post('/api/password/email')
 
+			this.form.reset()
         }
     }
 

@@ -43,8 +43,6 @@ export const actions = {
         try {
             const { data } = await axios.get('/api/user')
 
-            localStorage.setItem("auth", "true");
-
             commit('FETCH_USER_SUCCESS', { user: data })
         } catch (e) {
             commit('FETCH_USER_FAILURE')
@@ -60,7 +58,7 @@ export const actions = {
             await axios.post('/api/logout')
         } catch (e) { }
 
-        commit(types.LOGOUT)
+        commit('LOGOUT')
     }
 
 }
