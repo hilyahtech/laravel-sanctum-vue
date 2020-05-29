@@ -57,20 +57,13 @@ export default {
 	}),
 
     methods: {
-        submit() {
+        async submit() {
             
 			// Register the user.
-			const { data } = await this.form.post('/register')
+			const { data } = await this.form.post('/api/register')
 
-			// Must verify email fist.
-			if (data.status) {
-
-				this.$buefy.snackbar.open(data.status)
-
-				// Redirect home.
-				this.$router.push({ path: 'login', query: { email: this.form.email } })
-
-            }
+            // Redirect home.
+            this.$router.push({ path: 'login', query: { email: this.form.email } })
             
         }
     }

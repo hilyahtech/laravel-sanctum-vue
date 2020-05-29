@@ -51,6 +51,10 @@ export default {
         })
     }),
 
+	created () {
+		this.form.email = this.$route.query.email
+	},
+
     methods: {
 
         async submit() {
