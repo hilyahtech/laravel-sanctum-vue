@@ -12,7 +12,7 @@
                     </b-field>
 
                     <b-field>
-                        <b-button native-type="submit" type="is-primary" outlined class="is-fullwidth">Kirim Tautan Verifikasi</b-button>
+                        <b-button native-type="submit" :loading="form.busy" type="is-primary" outlined class="is-fullwidth">Kirim Tautan Verifikasi</b-button>
                     </b-field>
 
                 </form>
