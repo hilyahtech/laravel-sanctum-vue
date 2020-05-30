@@ -80,12 +80,13 @@ class LoginController extends Controller
                 'email' => ['Alamat email Anda belum terdaftar.'],
             ]);
         }
-        
+
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+        Auth::guard('web')->logout();
     }
 
 }
